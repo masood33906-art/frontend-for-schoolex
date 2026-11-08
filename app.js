@@ -57,12 +57,8 @@ function renderAuthState() {
   }
   $$("[data-download-label]").forEach(el => el.textContent = user ? "Continue to payment — Rs 1,500" : "Sign in to get SchoolEx");
   $$("[data-download]").forEach(b => b.classList.toggle("unlocked", !!user));
-  $$("[data-download-hint]").forEach(el => el.textContent = user
-    ? `Signed in as ${user.email} — one step left: send the Rs 1,500 voucher below.`
-    : el.dataset.defaultHint || el.textContent);
   renderOrderState();
 }
-$$("[data-download-hint]").forEach(el => el.dataset.defaultHint = el.textContent);
 
 /* ---------- modal ---------- */
 const modal = $("#authModal");
