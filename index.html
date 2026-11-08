@@ -175,7 +175,7 @@
     <h2>How it works</h2>
     <div class="grid steps-grid">
       <article class="card glass step"><span class="step-no">1</span><h3>Sign in</h3><p>Create your free account on this page. It takes less than a minute.</p></article>
-      <article class="card glass step"><span class="step-no">2</span><h3>Send the Rs 1,500 voucher</h3><p>Send a JazzCash or Easypaisa voucher of Rs 1,500 and share its code with us from the payment section below.</p></article>
+      <article class="card glass step"><span class="step-no">2</span><h3>Pay Rs 1,500 by JazzCash</h3><p>Scan the QR code or send Rs 1,500 to the JazzCash number shown below, then upload your receipt picture.</p></article>
       <article class="card glass step"><span class="step-no">3</span><h3>Receive the app by email</h3><p>We verify your voucher and email the SchoolEx app (ZIP) to you — within 24 hours. Install it and start empty, with your own school's data.</p></article>
     </div>
   </section>
@@ -274,7 +274,7 @@
       <div class="price-tag"><span class="price-amount">Rs 1,500</span><span class="price-note">one-time · per school</span></div>
       <ul class="specs">
         <li><span>Platform</span><strong>Windows 10 / 11</strong></li>
-        <li><span>Payment</span><strong>JazzCash / Easypaisa voucher</strong></li>
+        <li><span>Payment</span><strong>JazzCash — QR / number</strong></li>
         <li><span>Delivery</span><strong>By email, within 24 hours</strong></li>
         <li><span>Internet</span><strong>Not required</strong></li>
       </ul>
@@ -286,36 +286,52 @@
       <div class="pay-panel" id="paymentPanel" hidden>
         <div class="pay-head">
           <span class="step-badge">Final step</span>
-          <h3>Send your Rs 1,500 voucher</h3>
-          <p>Buy a <strong>JazzCash</strong> or <strong>Easypaisa</strong> voucher of <strong>Rs 1,500</strong>, enter its code below and submit — your details are sent <strong>straight to our Gmail inbox</strong> for verification. We verify every voucher personally before sending the app.</p>
+          <h3>Pay Rs 1,500 with JazzCash</h3>
+          <p>Send <strong>Rs 1,500</strong> from JazzCash or any mobile wallet / bank app (Raast) to the number below — then upload your receipt picture. Your details and the picture are sent <strong>straight to our Gmail inbox</strong> for verification.</p>
         </div>
 
-        <div class="pay-methods" role="radiogroup" aria-label="Payment method">
-          <button type="button" class="method-pill active" data-method="JazzCash" role="radio" aria-checked="true">JazzCash</button>
-          <button type="button" class="method-pill" data-method="Easypaisa" role="radio" aria-checked="false">Easypaisa</button>
+        <div class="jazz-card">
+          <div class="jazz-info">
+            <span class="jazz-brand">JazzCash</span>
+            <span class="jazz-label">Send money to this number</span>
+            <span class="jazz-number">0329 5626026</span>
+            <span class="jazz-title">Account title: <strong>Masood Ahmad</strong></span>
+            <button class="btn btn-glass btn-sm" id="copyNumberBtn" type="button">📋 Copy number</button>
+          </div>
+          <div class="qr-box">
+            <!-- Owner's JazzCash QR will be placed here as qr-jazzcash.svg once a valid QR is supplied -->
+            <div class="qr-placeholder" role="img" aria-label="QR code coming soon — please use the JazzCash number">
+              <span class="qr-icon">▦</span>
+              <span>QR code coming soon<br />Please use the number for now</span>
+            </div>
+          </div>
         </div>
 
-        <label class="voucher-label"> Voucher code / transaction ID
-          <input type="text" id="voucherCode" placeholder="e.g. 0123456789" autocomplete="off" />
+        <label class="voucher-label"> Upload your voucher / receipt picture
+          <span class="upload-box">
+            <input type="file" id="proofFile" accept="image/*" />
+            <span class="upload-hint" id="proofName">Choose the screenshot or photo of your payment receipt (image, up to 8 MB)</span>
+          </span>
         </label>
+        <img id="proofPreview" class="proof-preview" alt="Your uploaded receipt preview" hidden />
         <p class="form-error" id="payError" role="alert" hidden></p>
 
         <div class="pay-actions">
+          <button class="btn btn-primary btn-lg" id="confirmSentBtn" type="button">Submit payment proof ✓</button>
           <a class="btn btn-glass btn-lg" id="sendVoucherBtn" href="#" role="button">
-            ✉&#160; Send voucher to <span class="masked-email">mas•••06@gmail.com</span>
+            ✉&#160; Or email it to <span class="masked-email">mas•••06@gmail.com</span>
           </a>
-          <button class="btn btn-primary btn-lg" id="confirmSentBtn" type="button">Submit my voucher ✓</button>
         </div>
-        <p class="pay-note"><strong>Submit</strong> sends your voucher details directly to our Gmail inbox — no email app needed. Prefer to email it yourself (for example with a receipt screenshot)? Use the masked-email button above; it opens your email app with everything pre-filled. The address is shown masked on purpose.</p>
+        <p class="pay-note"><strong>Submit</strong> sends your details and receipt picture directly to our Gmail inbox — no email app needed. If submitting ever fails, use the masked-email button instead and attach the picture in your email app. The address is shown masked on purpose.</p>
       </div>
 
       <!-- Thank-you (shown after the visitor confirms sending) -->
       <div class="thanks-panel" id="thanksPanel" hidden>
         <div class="thanks-icon" aria-hidden="true">🎉</div>
         <h3>Congratulations — and thank you, from the heart! 💚</h3>
-        <p class="thanks-msg">You have taken a beautiful step for your school. Your payment details are with us now, and it truly means a lot that you chose SchoolEx. We will lovingly verify your voucher and <strong>email the SchoolEx app (ZIP) to <span id="thanksEmail">your email</span> within 24 hours</strong> — by <strong id="deliveryBy"></strong> at the latest.</p>
+        <p class="thanks-msg">You have taken a beautiful step for your school. Your payment details are with us now, and it truly means a lot that you chose SchoolEx. We will lovingly verify your payment and <strong>email the SchoolEx app (ZIP) to <span id="thanksEmail">your email</span> within 24 hours</strong> — by <strong id="deliveryBy"></strong> at the latest.</p>
         <p class="thanks-sub" id="orderSummary"></p>
-        <p class="thanks-sub">No need to wait on this page — just keep an eye on your inbox (and the spam folder, just in case). If anything is missing in your voucher, we will reply to the same email and help you complete it.</p>
+        <p class="thanks-sub">No need to wait on this page — just keep an eye on your inbox (and the spam folder, just in case). If anything is unclear in your receipt picture, we will reply to the same email and help you complete it.</p>
         <p class="thanks-sign">With gratitude,<br /><strong>Team SchoolEx</strong></p>
       </div>
     </div>

@@ -154,6 +154,21 @@ main{max-width:1180px;margin:0 auto;padding:0 16px}
 .pay-head h3{font-size:1.25rem;margin:8px 0 6px}
 .pay-head p{color:var(--muted);font-size:.96rem}
 .step-badge{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--green-dark);background:rgba(14,159,110,.13);padding:5px 11px;border-radius:999px}
+.jazz-card{display:flex;gap:22px;align-items:center;background:#fff;border:1px solid rgba(15,31,42,.09);border-radius:18px;padding:20px;margin:20px 0;text-align:left}
+.jazz-info{display:flex;flex-direction:column;gap:3px;flex:1;align-items:flex-start}
+.jazz-brand{font-weight:800;font-size:1.05rem;color:#e01a2b;letter-spacing:.01em}
+.jazz-label{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.jazz-number{font-size:clamp(1.7rem,4.4vw,2.3rem);font-weight:800;letter-spacing:.04em;line-height:1.15;color:var(--ink)}
+.jazz-title{color:var(--muted);font-size:.94rem;margin-bottom:10px}
+.qr-box{flex:none;width:172px;height:172px;border-radius:14px;border:1.5px dashed rgba(15,31,42,.22);display:grid;place-items:center;background:#fbfdfc;padding:10px}
+.qr-box img{width:100%;height:100%;object-fit:contain;border-radius:8px}
+.qr-placeholder{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;color:var(--muted);font-size:.8rem;font-weight:600;line-height:1.35}
+.qr-icon{font-size:2rem;color:rgba(15,31,42,.35)}
+.upload-box{display:block}
+.upload-box input[type="file"]{width:100%;padding:11px;border-radius:12px;border:1px dashed rgba(15,31,42,.3);background:rgba(255,255,255,.9);font:inherit;font-weight:400;font-size:.9rem}
+.upload-hint{display:block;margin-top:6px;font-size:.82rem;color:var(--muted);font-weight:500}
+.proof-preview{display:block;max-width:220px;max-height:220px;border-radius:12px;border:1px solid rgba(15,31,42,.15);margin-top:12px;box-shadow:0 10px 24px rgba(15,45,35,.14)}
+@media (max-width:680px){.jazz-card{flex-direction:column;text-align:center}.jazz-info{align-items:center}.qr-box{width:190px;height:190px}}
 .pay-methods{display:flex;gap:10px;margin:20px 0 16px}
 .method-pill{flex:1;padding:12px;border-radius:13px;border:1.5px solid rgba(15,31,42,.14);background:rgba(255,255,255,.85);font-weight:700;color:var(--muted)}
 .method-pill.active{border-color:var(--green);color:var(--green-dark);background:rgba(14,159,110,.1);box-shadow:0 6px 16px rgba(14,159,110,.16)}

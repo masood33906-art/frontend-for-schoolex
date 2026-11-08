@@ -1,7 +1,7 @@
 /* SchoolEx landing page — sign-in gate + voucher payment + email delivery
    ---------------------------------------------------------------
    CONFIG: SchoolEx is sold for a one-time Rs 1,500, paid by a
-   JazzCash / Easypaisa voucher emailed to the owner. The owner
+   JazzCash payment (number shown openly; receipt picture uploaded) emailed to the owner. The owner
    verifies the voucher and emails the app ZIP within 24 hours.
    The email is shown MASKED on the page; the real address lives
    only here and in the mailto link it builds.
@@ -158,7 +158,6 @@ $("#signOutBtn").addEventListener("click", () => {
 function goToPayment() {
   if (!currentUser()) { openAuth("signin"); toast("Please sign in first — the payment step unlocks right after."); return; }
   document.getElementById("download")?.scrollIntoView({ behavior: "smooth" });
-  setTimeout(() => $("#voucherCode")?.focus({ preventScroll: true }), 500);
 }
 $$("[data-download]").forEach(b => b.addEventListener("click", goToPayment));
 
@@ -171,38 +170,56 @@ const fmtWhen = (ts) => new Intl.DateTimeFormat("en-GB", {
   weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit", hour12: true, timeZone: "Asia/Karachi"
 }).format(new Date(ts));
 
-let selectedMethod = "JazzCash";
-$$(".method-pill").forEach(pill => pill.addEventListener("click", () => {
-  selectedMethod = pill.dataset.method;
-  $$(".method-pill").forEach(p => {
-    const on = p === pill;
-    p.classList.toggle("active", on);
-    p.setAttribute("aria-checked", on);
-  });
-  updateMailto();
-}));
+/* JazzCash number buyers send Rs 1,500 to (shown openly on the page) */
+const JAZZCASH_NUMBER = "03295626026";
+const JAZZCASH_NUMBER_DISPLAY = "0329 5626026";
+const JAZZCASH_TITLE = "Masood Ahmad";
+const MAX_PROOF_BYTES = 8 * 1024 * 1024;
+
+$("#copyNumberBtn").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(JAZZCASH_NUMBER); toast("JazzCash number copied: " + JAZZCASH_NUMBER_DISPLAY, "ok"); }
+  catch { toast("JazzCash number: " + JAZZCASH_NUMBER_DISPLAY + " (" + JAZZCASH_TITLE + ")"); }
+});
+
+/* receipt picture picker + preview */
+let proofFile = null;
+$("#proofFile").addEventListener("change", () => {
+  const f = $("#proofFile").files[0] || null;
+  const err = $("#payError");
+  proofFile = null;
+  $("#proofPreview").hidden = true;
+  $("#proofName").textContent = "Choose the screenshot or photo of your payment receipt (image, up to 8 MB)";
+  if (!f) return;
+  if (!f.type.startsWith("image/")) { err.textContent = "Please choose an image file (a screenshot or photo of your receipt)."; err.hidden = false; return; }
+  if (f.size > MAX_PROOF_BYTES) { err.textContent = "That picture is larger than 8 MB — please send a smaller screenshot of the receipt."; err.hidden = false; return; }
+  err.hidden = true;
+  proofFile = f;
+  $("#proofName").textContent = "Selected: " + f.name;
+  const prev = $("#proofPreview");
+  prev.src = URL.createObjectURL(f);
+  prev.hidden = false;
+});
 
 function updateMailto() {
   const user = currentUser();
-  const code = $("#voucherCode").value.trim();
-  const subject = encodeURIComponent(`SchoolEx Payment — Rs ${PRICE_PKR} ${selectedMethod} Voucher`);
+  const subject = encodeURIComponent(`SchoolEx Payment — Rs ${PRICE_PKR} JazzCash from ${user ? user.name : ""}`);
   const body = encodeURIComponent(
 `Assalam-o-Alaikum,
 
-I have sent a ${selectedMethod} voucher of Rs ${PRICE_PKR} for SchoolEx.
+I have sent Rs ${PRICE_PKR} by JazzCash to ${JAZZCASH_NUMBER_DISPLAY} (${JAZZCASH_TITLE}) for SchoolEx.
+My receipt picture is attached to this email.
 
 Name: ${user ? user.name : ""}
 School: ${user && user.school ? user.school : ""}
 My email (send the app here): ${user ? user.email : ""}
-Voucher code / transaction ID: ${code || "(paste your voucher code here)"}
 
 Please verify and email me the SchoolEx app within 24 hours. Thank you!`
   );
   $("#sendVoucherBtn").href = `mailto:${PAYMENT_EMAIL}?subject=${subject}&body=${body}`;
 }
-$("#voucherCode").addEventListener("input", updateMailto);
 $("#sendVoucherBtn").addEventListener("click", (e) => {
-  if (!currentUser()) { e.preventDefault(); openAuth("signin"); toast("Please sign in first, then send your voucher."); }
+  if (!currentUser()) { e.preventDefault(); openAuth("signin"); toast("Please sign in first, then send your payment proof."); }
+  else toast("Your email app is opening — remember to attach your receipt picture before sending.");
 });
 
 function renderOrderState() {
@@ -216,32 +233,29 @@ function renderOrderState() {
     $("#thanksEmail").textContent = order.email;
     $("#deliveryBy").textContent = fmtWhen(order.deliverBy);
     $("#orderSummary").textContent =
-      `Order reference: ${order.ref} · ${order.method} voucher ${order.voucher} · Submitted ${fmtWhen(order.at)} · Status: awaiting verification` +
-      (order.emailed ? " · Details received in our Gmail inbox ✓" : "");
+      `Order reference: ${order.ref} · JazzCash Rs ${PRICE_PKR} · ${order.proof ? "Receipt picture: " + order.proof : "Voucher: " + (order.voucher || "—")} · Submitted ${fmtWhen(order.at)} · Status: awaiting verification` +
+      (order.emailed ? " · Proof received in our Gmail inbox ✓" : "");
   }
   updateMailto();
 }
 
-async function emailOrderToOwner(order) {
+async function submitOrderWithProof(order, file) {
   try {
-    const res = await fetch(FORMSUBMIT_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({
-        _subject: `SchoolEx Order ${order.ref} — Rs ${PRICE_PKR} ${order.method} voucher from ${order.name}`,
-        _template: "table",
-        _replyto: order.email,
-        "Order reference": order.ref,
-        "Buyer name": order.name,
-        "Buyer email (send the app here)": order.email,
-        "School": order.school || "—",
-        "Payment method": order.method,
-        "Voucher code / transaction ID": order.voucher,
-        "Amount": `Rs ${PRICE_PKR}`,
-        "Submitted": fmtWhen(order.at),
-        "Deliver app by": fmtWhen(order.deliverBy)
-      })
-    });
+    const fd = new FormData();
+    fd.append("_subject", `SchoolEx Order ${order.ref} — Rs ${PRICE_PKR} JazzCash from ${order.name}`);
+    fd.append("_template", "table");
+    fd.append("_replyto", order.email);
+    fd.append("Order reference", order.ref);
+    fd.append("Buyer name", order.name);
+    fd.append("Buyer email (send the app here)", order.email);
+    fd.append("School", order.school || "—");
+    fd.append("Payment method", "JazzCash");
+    fd.append("Paid to", `${JAZZCASH_NUMBER_DISPLAY} (${JAZZCASH_TITLE})`);
+    fd.append("Amount", `Rs ${PRICE_PKR}`);
+    fd.append("Submitted", fmtWhen(order.at));
+    fd.append("Deliver app by", fmtWhen(order.deliverBy));
+    if (file) fd.append("attachment", file, file.name);
+    const res = await fetch(FORMSUBMIT_ENDPOINT, { method: "POST", headers: { "Accept": "application/json" }, body: fd });
     return res.ok;
   } catch { return false; }
 }
@@ -249,28 +263,27 @@ async function emailOrderToOwner(order) {
 $("#confirmSentBtn").addEventListener("click", async () => {
   const user = currentUser();
   if (!user) { openAuth("signin"); return; }
-  const code = $("#voucherCode").value.trim();
-  if (code.length < 4) {
+  if (!proofFile) {
     const err = $("#payError");
-    err.textContent = "Please enter your voucher code / transaction ID first — we need it to verify your payment.";
+    err.textContent = "Please upload your voucher / receipt picture first — we need it to verify your payment.";
     err.hidden = false;
-    $("#voucherCode").focus();
+    $("#proofFile").focus();
     return;
   }
   $("#payError").hidden = true;
   const btn = $("#confirmSentBtn");
   btn.disabled = true;
   const originalLabel = btn.textContent;
-  btn.textContent = "Sending to our inbox…";
+  btn.textContent = "Sending proof to our inbox…";
   const at = Date.now();
   const order = {
     ref: "SX-" + at.toString(36).toUpperCase(),
     email: user.email, name: user.name, school: user.school || "",
-    method: selectedMethod, voucher: code, amount: PRICE_PKR,
+    method: "JazzCash", proof: proofFile.name, amount: PRICE_PKR,
     at, deliverBy: at + 24 * 60 * 60 * 1000, status: "awaiting verification",
     emailed: false
   };
-  order.emailed = await emailOrderToOwner(order);
+  order.emailed = await submitOrderWithProof(order, proofFile);
   const orders = loadOrders().filter(o => o.email !== user.email);
   orders.push(order);
   saveOrders(orders);
@@ -279,8 +292,8 @@ $("#confirmSentBtn").addEventListener("click", async () => {
   renderOrderState();
   $("#thanksPanel").scrollIntoView({ behavior: "smooth", block: "center" });
   toast(order.emailed
-    ? "Congratulations! Your voucher details are in our Gmail inbox — the app will be emailed within 24 hours."
-    : "Congratulations! Your order is saved — if our inbox email doesn't reach us, please also use the masked-email button above.", "ok");
+    ? "Congratulations! Your payment proof is in our Gmail inbox — the app will be emailed within 24 hours."
+    : "Your order is saved on this device, but sending to our inbox failed — please also email the picture via the masked-email button so we receive it.", "ok");
 });
 
 /* ---------- screenshots lightbox ---------- */

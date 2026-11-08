@@ -23,9 +23,10 @@ Visitors must create an account / sign in before the payment step unlocks.
 
 After sign-in, the **Get SchoolEx** section shows the payment step:
 
-1. The visitor picks **JazzCash** or **Easypaisa** and enters their voucher code / transaction ID.
-2. **Submit my voucher** — the order is saved in the visitor's browser (`localStorage`) **and automatically emailed to the owner's Gmail** via the free FormSubmit relay (`FORMSUBMIT_ENDPOINT` in `app.js`), with the buyer as reply-to. A congratulations / thank-you panel appears: the app will be verified and **emailed to them within 24 hours**, with the exact deadline date/time shown.
-3. **Masked-email button (backup)** — the owner's email is shown **masked** (`mas•••06@gmail.com`); the button itself is a `mailto:` to the real address (set by `PAYMENT_EMAIL` at the top of `app.js`) with subject and body pre-filled, for visitors who prefer to email a receipt screenshot themselves.
+1. The visitor sees the owner's **JazzCash number** (`0329 5626026`, account title **Masood Ahmad** — constants at the payment section of `app.js`) with a copy button, and pays **Rs 1,500** from JazzCash / any Raast wallet. A QR slot sits beside the number (`qr-placeholder` in `index.html`): the QR image the owner first supplied decoded to a broken payload containing `null` instead of an account, so **no QR is published** until a valid one is supplied — when it is, decode it, re-encode as `qr-jazzcash.svg`, and swap the placeholder for the image.
+2. The visitor **uploads the receipt picture** (image, ≤ 8 MB, with preview) — no voucher code typing.
+3. **Submit payment proof** — the order is saved in the visitor's browser (`localStorage`) **and automatically emailed to the owner's Gmail with the picture attached** via the free FormSubmit relay (`FORMSUBMIT_ENDPOINT` in `app.js`, multipart form with an `attachment` field), buyer set as reply-to. A congratulations / thank-you panel appears: the payment will be verified and the app **emailed to them within 24 hours**, with the exact deadline shown.
+4. **Masked-email button (backup)** — the owner's email is shown **masked** (`mas•••06@gmail.com`); the button itself is a `mailto:` to the real address (set by `PAYMENT_EMAIL` at the top of `app.js`) with subject and body pre-filled, for visitors whose submit fails or who prefer emailing themselves.
 
 > ⚠️ **One-time activation:** the very first submission makes FormSubmit send an **activation email** to the owner's Gmail. The owner must click **Activate** in that email once — after that, every submission lands directly in the inbox. Until activation, use the mailto backup button.
 
