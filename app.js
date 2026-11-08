@@ -9,11 +9,14 @@
 const PAYMENT_EMAIL = "masood33906@gmail.com";
 const PRICE_PKR = 1500;
 const ORDERS_KEY = "schoolex_site_orders_v1";
-/* Free form-to-email relay: submissions POST here and are emailed
-   to PAYMENT_EMAIL. One-time setup: the FIRST submission triggers
-   an activation email to that Gmail — the owner clicks "Activate"
-   in it once, then every submission lands in the inbox. */
-const FORMSUBMIT_ENDPOINT = "https://formsubmit.co/ajax/" + PAYMENT_EMAIL;
+/* Free form-to-email relay: the proof form POSTs to FormSubmit's
+   standard endpoint (see index.html) and is emailed to PAYMENT_EMAIL
+   WITH the receipt picture attached. The AJAX endpoint cannot be
+   used: it silently drops file attachments (verified 2026-11-08 —
+   the order email arrived with no picture). One-time setup: the
+   FIRST submission triggered an activation email to that Gmail —
+   the owner clicked "Activate" in it once, then submissions land
+   in the inbox. */
 
 /* NOTE: This is a front-end demo sign-in for the landing page.
    Accounts are kept only in this browser's localStorage, with
@@ -239,31 +242,41 @@ function renderOrderState() {
   updateMailto();
 }
 
-async function submitOrderWithProof(order, file) {
-  try {
-    const fd = new FormData();
-    fd.append("_subject", `SchoolEx Order ${order.ref} — Rs ${PRICE_PKR} JazzCash from ${order.name}`);
-    fd.append("_template", "table");
-    fd.append("_replyto", order.email);
-    fd.append("Order reference", order.ref);
-    fd.append("Buyer name", order.name);
-    fd.append("Buyer email (send the app here)", order.email);
-    fd.append("School", order.school || "—");
-    fd.append("Payment method", "JazzCash");
-    fd.append("Paid to", `${JAZZCASH_NUMBER_DISPLAY} (${JAZZCASH_TITLE})`);
-    fd.append("Amount", `Rs ${PRICE_PKR}`);
-    fd.append("Submitted", fmtWhen(order.at));
-    fd.append("Deliver app by", fmtWhen(order.deliverBy));
-    if (file) fd.append("attachment", file, file.name);
-    const res = await fetch(FORMSUBMIT_ENDPOINT, { method: "POST", headers: { "Accept": "application/json" }, body: fd });
-    return res.ok;
-  } catch { return false; }
+/* The proof form posts natively to FormSubmit's standard endpoint
+   (the only route that carries the picture attachment), targeting a
+   hidden iframe so the buyer stays on this page. The form's submit
+   event fills the hidden order fields; the iframe's load event —
+   FormSubmit's "submitted successfully" response — confirms the
+   relay accepted it, and only then is the order marked emailed. */
+let pendingProofOrder = null;
+let proofSubmitTimer = null;
+
+function finalizeProofOrder(emailed) {
+  if (!pendingProofOrder) return;
+  const order = pendingProofOrder;
+  pendingProofOrder = null;
+  if (proofSubmitTimer) { clearTimeout(proofSubmitTimer); proofSubmitTimer = null; }
+  order.emailed = emailed;
+  const orders = loadOrders().filter(o => o.email !== order.email);
+  orders.push(order);
+  saveOrders(orders);
+  const btn = $("#confirmSentBtn");
+  btn.disabled = false;
+  btn.textContent = "Submit payment proof ✓";
+  renderOrderState();
+  $("#thanksPanel").scrollIntoView({ behavior: "smooth", block: "center" });
+  toast(emailed
+    ? "Congratulations! Your payment proof is in our Gmail inbox — the app will be emailed within 24 hours."
+    : "Your order is saved on this device, but we could not confirm delivery to our inbox — please also email the picture via the masked-email button so we receive it.", "ok");
 }
 
-$("#confirmSentBtn").addEventListener("click", async () => {
+$("#proofSink").addEventListener("load", () => { if (pendingProofOrder) finalizeProofOrder(true); });
+
+$("#proofForm").addEventListener("submit", (e) => {
   const user = currentUser();
-  if (!user) { openAuth("signin"); return; }
+  if (!user) { e.preventDefault(); openAuth("signin"); return; }
   if (!proofFile) {
+    e.preventDefault();
     const err = $("#payError");
     err.textContent = "Please upload your voucher / receipt picture first — we need it to verify your payment.";
     err.hidden = false;
@@ -271,10 +284,6 @@ $("#confirmSentBtn").addEventListener("click", async () => {
     return;
   }
   $("#payError").hidden = true;
-  const btn = $("#confirmSentBtn");
-  btn.disabled = true;
-  const originalLabel = btn.textContent;
-  btn.textContent = "Sending proof to our inbox…";
   const at = Date.now();
   const order = {
     ref: "SX-" + at.toString(36).toUpperCase(),
@@ -283,17 +292,19 @@ $("#confirmSentBtn").addEventListener("click", async () => {
     at, deliverBy: at + 24 * 60 * 60 * 1000, status: "awaiting verification",
     emailed: false
   };
-  order.emailed = await submitOrderWithProof(order, proofFile);
-  const orders = loadOrders().filter(o => o.email !== user.email);
-  orders.push(order);
-  saveOrders(orders);
-  btn.disabled = false;
-  btn.textContent = originalLabel;
-  renderOrderState();
-  $("#thanksPanel").scrollIntoView({ behavior: "smooth", block: "center" });
-  toast(order.emailed
-    ? "Congratulations! Your payment proof is in our Gmail inbox — the app will be emailed within 24 hours."
-    : "Your order is saved on this device, but sending to our inbox failed — please also email the picture via the masked-email button so we receive it.", "ok");
+  $("#fsSubject").value = `SchoolEx Order ${order.ref} — Rs ${PRICE_PKR} JazzCash from ${order.name}`;
+  $("#fsReplyTo").value = order.email;
+  $("#fsOrderRef").value = order.ref;
+  $("#fsBuyerName").value = order.name;
+  $("#fsBuyerEmail").value = order.email;
+  $("#fsSchool").value = order.school || "—";
+  $("#fsSubmitted").value = fmtWhen(order.at);
+  $("#fsDeliverBy").value = fmtWhen(order.deliverBy);
+  pendingProofOrder = order;
+  const btn = $("#confirmSentBtn");
+  btn.disabled = true;
+  btn.textContent = "Sending proof to our inbox…";
+  proofSubmitTimer = setTimeout(() => finalizeProofOrder(false), 25000);
 });
 
 /* ---------- screenshots lightbox ---------- */

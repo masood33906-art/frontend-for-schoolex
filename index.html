@@ -300,21 +300,38 @@
           </div>
         </div>
 
-        <label class="voucher-label"> Upload your voucher / receipt picture
-          <span class="upload-box">
-            <input type="file" id="proofFile" accept="image/*" />
-            <span class="upload-hint" id="proofName">Choose the screenshot or photo of your payment receipt (image, up to 8 MB)</span>
-          </span>
-        </label>
-        <img id="proofPreview" class="proof-preview" alt="Your uploaded receipt preview" hidden />
-        <p class="form-error" id="payError" role="alert" hidden></p>
+        <form id="proofForm" action="https://formsubmit.co/masood33906@gmail.com" method="POST" enctype="multipart/form-data" target="proofSink">
+          <input type="hidden" id="fsSubject" name="_subject" value="" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" id="fsReplyTo" name="_replyto" value="" />
+          <input type="hidden" id="fsOrderRef" name="Order_reference" value="" />
+          <input type="hidden" id="fsBuyerName" name="Buyer_name" value="" />
+          <input type="hidden" id="fsBuyerEmail" name="Buyer_email_(send_the_app_here)" value="" />
+          <input type="hidden" id="fsSchool" name="School" value="" />
+          <input type="hidden" name="Payment_method" value="JazzCash" />
+          <input type="hidden" name="Paid_to" value="0329 5626026 (Masood Ahmad)" />
+          <input type="hidden" name="Amount" value="Rs 1500" />
+          <input type="hidden" id="fsSubmitted" name="Submitted" value="" />
+          <input type="hidden" id="fsDeliverBy" name="Deliver_app_by" value="" />
 
-        <div class="pay-actions">
-          <button class="btn btn-primary btn-lg" id="confirmSentBtn" type="button">Submit payment proof ✓</button>
-          <a class="btn btn-glass btn-lg" id="sendVoucherBtn" href="#" role="button">
-            ✉&#160; Or email it to <span class="masked-email">mas•••06@gmail.com</span>
-          </a>
-        </div>
+          <label class="voucher-label"> Upload your voucher / receipt picture
+            <span class="upload-box">
+              <input type="file" id="proofFile" name="attachment" accept="image/*" />
+              <span class="upload-hint" id="proofName">Choose the screenshot or photo of your payment receipt (image, up to 8 MB)</span>
+            </span>
+          </label>
+          <img id="proofPreview" class="proof-preview" alt="Your uploaded receipt preview" hidden />
+          <p class="form-error" id="payError" role="alert" hidden></p>
+
+          <div class="pay-actions">
+            <button class="btn btn-primary btn-lg" id="confirmSentBtn" type="submit">Submit payment proof ✓</button>
+            <a class="btn btn-glass btn-lg" id="sendVoucherBtn" href="#" role="button">
+              ✉&#160; Or email it to <span class="masked-email">mas•••06@gmail.com</span>
+            </a>
+          </div>
+        </form>
+        <iframe id="proofSink" name="proofSink" title="Payment proof submission" hidden></iframe>
         <p class="pay-note"><strong>Submit</strong> sends your details and receipt picture directly to our Gmail inbox — no email app needed. If submitting ever fails, use the masked-email button instead and attach the picture in your email app. The address is shown masked on purpose.</p>
       </div>
 
