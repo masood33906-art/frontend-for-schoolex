@@ -3,8 +3,8 @@
    CONFIG: SchoolEx is sold for a one-time Rs 1,500, paid by a
    JazzCash payment (number shown openly; receipt picture uploaded) emailed to the owner. The owner
    verifies the voucher and emails the app ZIP within 24 hours.
-   The email is shown MASKED on the page; the real address lives
-   only here and in the mailto link it builds.
+   The owner's email is never displayed as text on the page; it
+   lives only here and in the proof form's action (index.html).
 ---------------------------------------------------------------- */
 const PAYMENT_EMAIL = "masood33906@gmail.com";
 const PRICE_PKR = 1500;
@@ -208,28 +208,6 @@ $("#proofFile").addEventListener("change", () => {
   prev.hidden = false;
 });
 
-function updateMailto() {
-  const user = currentUser();
-  const subject = encodeURIComponent(`SchoolEx Payment — Rs ${PRICE_PKR} JazzCash from ${user ? user.name : ""}`);
-  const body = encodeURIComponent(
-`Assalam-o-Alaikum,
-
-I have sent Rs ${PRICE_PKR} by JazzCash to ${JAZZCASH_NUMBER_DISPLAY} (${JAZZCASH_TITLE}) for SchoolEx.
-My receipt picture is attached to this email.
-
-Name: ${user ? user.name : ""}
-School: ${user && user.school ? user.school : ""}
-My email (send the app here): ${user ? user.email : ""}
-
-Please verify and email me the SchoolEx app within 24 hours. Thank you!`
-  );
-  $("#sendVoucherBtn").href = `mailto:${PAYMENT_EMAIL}?subject=${subject}&body=${body}`;
-}
-$("#sendVoucherBtn").addEventListener("click", (e) => {
-  if (!currentUser()) { e.preventDefault(); openAuth("signin"); toast("Please sign in first, then send your payment proof."); }
-  else toast("Your email app is opening — remember to attach your receipt picture before sending.");
-});
-
 function renderOrderState() {
   const panel = $("#paymentPanel"), thanks = $("#thanksPanel");
   if (!panel || !thanks) return;
@@ -244,7 +222,6 @@ function renderOrderState() {
       `Order reference: ${order.ref} · JazzCash Rs ${PRICE_PKR} · ${order.proof ? "Receipt picture: " + order.proof : "Voucher: " + (order.voucher || "—")} · Submitted ${fmtWhen(order.at)} · Status: awaiting verification` +
       (order.emailed ? " · Proof received in our Gmail inbox ✓" : "");
   }
-  updateMailto();
 }
 
 /* The proof form posts natively to FormSubmit's standard endpoint
@@ -272,7 +249,7 @@ function finalizeProofOrder(emailed) {
   $("#thanksPanel").scrollIntoView({ behavior: "smooth", block: "center" });
   toast(emailed
     ? "Congratulations! Your payment proof is in our Gmail inbox — the app will be emailed within 24 hours."
-    : "Your order is saved on this device, but we could not confirm delivery to our inbox — please also email the picture via the masked-email button so we receive it.", "ok");
+    : "Your order is saved on this device, but we could not confirm delivery to our inbox — please try submitting again in a moment.", "ok");
 }
 
 $("#proofSink").addEventListener("load", () => { if (pendingProofOrder) finalizeProofOrder(true); });
