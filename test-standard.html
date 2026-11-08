@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8" /><title>Standard form attachment test</title></head>
+<body>
+  <h1>Standard FormSubmit attachment test</h1>
+  <form id="t" action="https://formsubmit.co/masood33906@gmail.com" method="POST" enctype="multipart/form-data" target="sink">
+    <input type="hidden" name="_subject" value="SchoolEx Order SX-STDTEST — standard form attachment test" />
+    <input type="hidden" name="_template" value="table" />
+    <input type="hidden" name="_captcha" value="false" />
+    <input type="hidden" name="Order_reference" value="SX-STDTEST" />
+    <input type="hidden" name="Buyer_name" value="Standard Test" />
+    <input type="hidden" name="Buyer_email_(send_the_app_here)" value="stdtest@example.com" />
+    <label>Receipt picture <input id="f" type="file" name="attachment" accept="image/*" /></label>
+    <button id="send" type="submit">Send test</button>
+  </form>
+  <p id="status">idle</p>
+  <iframe name="sink" id="sink" style="width:1px;height:1px;border:0" title="sink"></iframe>
+  <script>
+    var sent = false;
+    document.getElementById('t').addEventListener('submit', function () {
+      sent = true;
+      document.getElementById('status').textContent = 'submitted, waiting for relay response…';
+    });
+    document.getElementById('sink').addEventListener('load', function () {
+      if (sent) document.getElementById('status').textContent = 'relay responded (iframe loaded)';
+    });
+  </script>
+</body>
+</html>
