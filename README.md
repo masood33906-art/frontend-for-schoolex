@@ -24,10 +24,12 @@ Visitors must create an account / sign in before the payment step unlocks.
 After sign-in, the **Get SchoolEx** section shows the payment step:
 
 1. The visitor picks **JazzCash** or **Easypaisa** and enters their voucher code / transaction ID.
-2. **Send voucher** button — the owner's email is shown **masked** (`mas•••06@gmail.com`); the button itself is a `mailto:` to the real address (set by `PAYMENT_EMAIL` at the top of `app.js`) with subject and body pre-filled (name, school, email, method, voucher code).
-3. **I've sent my voucher** — the visitor's order is saved in their browser (`localStorage`), and a congratulations / thank-you panel appears: the app will be verified and **emailed to them within 24 hours**, with the exact deadline date/time shown.
+2. **Submit my voucher** — the order is saved in the visitor's browser (`localStorage`) **and automatically emailed to the owner's Gmail** via the free FormSubmit relay (`FORMSUBMIT_ENDPOINT` in `app.js`), with the buyer as reply-to. A congratulations / thank-you panel appears: the app will be verified and **emailed to them within 24 hours**, with the exact deadline date/time shown.
+3. **Masked-email button (backup)** — the owner's email is shown **masked** (`mas•••06@gmail.com`); the button itself is a `mailto:` to the real address (set by `PAYMENT_EMAIL` at the top of `app.js`) with subject and body pre-filled, for visitors who prefer to email a receipt screenshot themselves.
 
-Delivery is manual by design: the owner receives the voucher email, verifies it, and replies with the SchoolEx ZIP. To change the price or email, edit `PRICE_PKR` / `PAYMENT_EMAIL` at the top of `app.js` (and the visible price in `index.html`).
+> ⚠️ **One-time activation:** the very first submission makes FormSubmit send an **activation email** to the owner's Gmail. The owner must click **Activate** in that email once — after that, every submission lands directly in the inbox. Until activation, use the mailto backup button.
+
+Delivery of the app itself is manual by design: the owner verifies the voucher in Gmail and replies with the SchoolEx ZIP. To change the price or email, edit `PRICE_PKR` / `PAYMENT_EMAIL` at the top of `app.js` (and the visible price in `index.html`).
 
 ## Run locally
 

@@ -9,6 +9,11 @@
 const PAYMENT_EMAIL = "masood33906@gmail.com";
 const PRICE_PKR = 1500;
 const ORDERS_KEY = "schoolex_site_orders_v1";
+/* Free form-to-email relay: submissions POST here and are emailed
+   to PAYMENT_EMAIL. One-time setup: the FIRST submission triggers
+   an activation email to that Gmail — the owner clicks "Activate"
+   in it once, then every submission lands in the inbox. */
+const FORMSUBMIT_ENDPOINT = "https://formsubmit.co/ajax/" + PAYMENT_EMAIL;
 
 /* NOTE: This is a front-end demo sign-in for the landing page.
    Accounts are kept only in this browser's localStorage, with
@@ -211,12 +216,37 @@ function renderOrderState() {
     $("#thanksEmail").textContent = order.email;
     $("#deliveryBy").textContent = fmtWhen(order.deliverBy);
     $("#orderSummary").textContent =
-      `Order reference: ${order.ref} · ${order.method} voucher ${order.voucher} · Submitted ${fmtWhen(order.at)} · Status: awaiting verification`;
+      `Order reference: ${order.ref} · ${order.method} voucher ${order.voucher} · Submitted ${fmtWhen(order.at)} · Status: awaiting verification` +
+      (order.emailed ? " · Details received in our Gmail inbox ✓" : "");
   }
   updateMailto();
 }
 
-$("#confirmSentBtn").addEventListener("click", () => {
+async function emailOrderToOwner(order) {
+  try {
+    const res = await fetch(FORMSUBMIT_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        _subject: `SchoolEx Order ${order.ref} — Rs ${PRICE_PKR} ${order.method} voucher from ${order.name}`,
+        _template: "table",
+        _replyto: order.email,
+        "Order reference": order.ref,
+        "Buyer name": order.name,
+        "Buyer email (send the app here)": order.email,
+        "School": order.school || "—",
+        "Payment method": order.method,
+        "Voucher code / transaction ID": order.voucher,
+        "Amount": `Rs ${PRICE_PKR}`,
+        "Submitted": fmtWhen(order.at),
+        "Deliver app by": fmtWhen(order.deliverBy)
+      })
+    });
+    return res.ok;
+  } catch { return false; }
+}
+
+$("#confirmSentBtn").addEventListener("click", async () => {
   const user = currentUser();
   if (!user) { openAuth("signin"); return; }
   const code = $("#voucherCode").value.trim();
@@ -228,19 +258,29 @@ $("#confirmSentBtn").addEventListener("click", () => {
     return;
   }
   $("#payError").hidden = true;
+  const btn = $("#confirmSentBtn");
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = "Sending to our inbox…";
   const at = Date.now();
   const order = {
     ref: "SX-" + at.toString(36).toUpperCase(),
     email: user.email, name: user.name, school: user.school || "",
     method: selectedMethod, voucher: code, amount: PRICE_PKR,
-    at, deliverBy: at + 24 * 60 * 60 * 1000, status: "awaiting verification"
+    at, deliverBy: at + 24 * 60 * 60 * 1000, status: "awaiting verification",
+    emailed: false
   };
+  order.emailed = await emailOrderToOwner(order);
   const orders = loadOrders().filter(o => o.email !== user.email);
   orders.push(order);
   saveOrders(orders);
+  btn.disabled = false;
+  btn.textContent = originalLabel;
   renderOrderState();
   $("#thanksPanel").scrollIntoView({ behavior: "smooth", block: "center" });
-  toast("Congratulations! Your voucher details are submitted — the app will be emailed within 24 hours.", "ok");
+  toast(order.emailed
+    ? "Congratulations! Your voucher details are in our Gmail inbox — the app will be emailed within 24 hours."
+    : "Congratulations! Your order is saved — if our inbox email doesn't reach us, please also use the masked-email button above.", "ok");
 });
 
 /* ---------- screenshots lightbox ---------- */
