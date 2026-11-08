@@ -63,7 +63,11 @@ function renderAuthState() {
     $("#userName").textContent = user.name;
     $("#userAvatar").textContent = user.name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
   }
-  $$("[data-download-label]").forEach(el => el.textContent = user ? "Continue to payment — Rs 1,500" : "Sign in to get SchoolEx");
+  const paid = user ? !!myOrder() : false;
+  $$("[data-download-label]").forEach(el => el.textContent =
+    !user ? "Sign in to get SchoolEx"
+    : paid ? "Payment done ✓ — your app is on its way"
+    : "Continue to payment — Rs 1,500");
   $$("[data-download]").forEach(b => b.classList.toggle("unlocked", !!user));
   renderOrderState();
 }
@@ -160,6 +164,7 @@ $("#signOutBtn").addEventListener("click", () => {
 /* ---------- get SchoolEx (gated) → payment step ---------- */
 function goToPayment() {
   if (!currentUser()) { openAuth("signin"); toast("Please sign in first — the payment step unlocks right after."); return; }
+  if (myOrder()) toast("Payment already done — your app will be emailed within 24 hours of your order. 💚", "ok");
   document.getElementById("download")?.scrollIntoView({ behavior: "smooth" });
 }
 $$("[data-download]").forEach(b => b.addEventListener("click", goToPayment));
