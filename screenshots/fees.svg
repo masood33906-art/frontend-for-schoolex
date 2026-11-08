@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 780" font-family="Inter, Arial, sans-serif">
+  <rect width="1200" height="780" rx="18" fill="#f4f8f5"/>
+  <rect width="1200" height="46" rx="18" fill="#ffffff"/><rect y="23" width="1200" height="23" fill="#ffffff"/>
+  <line x1="0" y1="46" x2="1200" y2="46" stroke="#e2eae5"/>
+  <circle cx="28" cy="23" r="6" fill="#f87171"/><circle cx="50" cy="23" r="6" fill="#fbbf24"/><circle cx="72" cy="23" r="6" fill="#34d399"/>
+  <text x="600" y="29" text-anchor="middle" font-size="14" fill="#5b6b76">SchoolEx — Fees &amp; Ledger</text>
+  <rect x="0" y="46" width="216" height="734" fill="#0e2a20"/>
+  <rect x="20" y="70" width="34" height="34" rx="9" fill="#0e9f6e"/>
+  <text x="64" y="93" font-size="18" font-weight="700" fill="#ffffff">SchoolEx</text>
+  <g font-size="14.5" fill="#b9cdc4">
+    <text x="30" y="151">▦&#160;&#160;Overview</text>
+    <text x="30" y="197">🎓&#160;&#160;Students</text>
+    <text x="30" y="243">👨‍🏫&#160;&#160;Staff &amp; Payroll</text>
+    <rect x="14" y="264" width="188" height="40" rx="10" fill="#14532d"/>
+    <text x="30" y="289" fill="#ffffff" font-weight="600">🧾&#160;&#160;Fees &amp; Ledger</text>
+    <text x="30" y="335">✅&#160;&#160;Attendance</text>
+    <text x="30" y="381">📝&#160;&#160;Exams</text>
+    <text x="30" y="427">⚙️&#160;&#160;Settings</text>
+  </g>
+  <text x="248" y="98" font-size="24" font-weight="800" fill="#122b21">Fees &amp; Ledger</text>
+  <rect x="952" y="66" width="216" height="44" rx="11" fill="#0e9f6e"/>
+  <text x="1060" y="94" text-anchor="middle" font-size="14.5" font-weight="700" fill="#ffffff">＋ Collect Payment</text>
+  <g>
+    <rect x="248" y="128" width="290" height="110" rx="14" fill="#ffffff" stroke="#e2eae5"/>
+    <text x="268" y="158" font-size="12.5" fill="#71827c" font-weight="600">TOTAL BILLED</text>
+    <text x="268" y="194" font-size="27" font-weight="800" fill="#122b21">Rs 11,86,000</text>
+    <text x="268" y="218" font-size="12.5" fill="#71827c">this session</text>
+    <rect x="554" y="128" width="290" height="110" rx="14" fill="#ffffff" stroke="#e2eae5"/>
+    <text x="574" y="158" font-size="12.5" fill="#71827c" font-weight="600">COLLECTED (REAL PAYMENTS)</text>
+    <text x="574" y="194" font-size="27" font-weight="800" fill="#0b7a55">Rs 8,42,500</text>
+    <text x="574" y="218" font-size="12.5" fill="#71827c">ledger income never counted as fees</text>
+    <rect x="860" y="128" width="308" height="110" rx="14" fill="#ffffff" stroke="#e2eae5"/>
+    <text x="880" y="158" font-size="12.5" fill="#71827c" font-weight="600">OUTSTANDING</text>
+    <text x="880" y="194" font-size="27" font-weight="800" fill="#b45309">Rs 3,43,500</text>
+    <text x="880" y="218" font-size="12.5" fill="#71827c">across 96 students</text>
+  </g>
+  <rect x="248" y="262" width="920" height="330" rx="14" fill="#ffffff" stroke="#e2eae5"/>
+  <rect x="248" y="262" width="920" height="46" rx="14" fill="#eef4f0"/>
+  <g font-size="12.5" font-weight="700" fill="#71827c">
+    <text x="272" y="290">DATE</text><text x="392" y="290">STUDENT</text><text x="640" y="290">DESCRIPTION</text><text x="1010" y="290">AMOUNT</text>
+  </g>
+  <g font-size="14.5" fill="#24404f">
+    <text x="272" y="340">08 Nov</text><text x="392" y="340">Ahmed Hassan · Cl. 8</text><text x="640" y="340">Tuition fee — November</text><text x="1150" y="340" text-anchor="end" font-weight="700" fill="#0b7a55">+ Rs 6,500</text>
+    <line x1="248" y1="362" x2="1168" y2="362" stroke="#eef2ef"/>
+    <text x="272" y="404">08 Nov</text><text x="392" y="404">Zainab Khalid · Cl. 8</text><text x="640" y="404">Tuition + exam fund</text><text x="1150" y="404" text-anchor="end" font-weight="700" fill="#0b7a55">+ Rs 7,200</text>
+    <line x1="248" y1="426" x2="1168" y2="426" stroke="#eef2ef"/>
+    <text x="272" y="468">07 Nov</text><text x="392" y="468">Office expense</text><text x="640" y="468">Printer paper &amp; toner</text><text x="1150" y="468" text-anchor="end" font-weight="700" fill="#b91c1c">− Rs 4,800</text>
+    <line x1="248" y1="490" x2="1168" y2="490" stroke="#eef2ef"/>
+    <text x="272" y="532">07 Nov</text><text x="392" y="532">Usman Raza · Cl. 7</text><text x="640" y="532">Partial payment — November</text><text x="1150" y="532" text-anchor="end" font-weight="700" fill="#0b7a55">+ Rs 3,000</text>
+    <line x1="248" y1="554" x2="1168" y2="554" stroke="#eef2ef"/>
+    <text x="272" y="582" font-size="13" fill="#71827c">Challans, fee cards and receipts print from this same record — nothing is typed twice.</text>
+  </g>
+  <rect x="248" y="616" width="920" height="90" rx="14" fill="#eef7f1" stroke="#d7ecdf"/>
+  <text x="268" y="652" font-size="14.5" font-weight="700" fill="#0b7a55">3-copy bank challan · Fee register card · Paid invoices</text>
+  <text x="268" y="678" font-size="13.5" fill="#41565f">Every printed document reads live from the ledger, so the paper always matches the system.</text>
+  <text x="1168" y="765" text-anchor="end" font-size="11" fill="#a7b8b1">Demo preview — sample figures</text>
+</svg>

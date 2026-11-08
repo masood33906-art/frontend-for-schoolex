@@ -8,28 +8,26 @@ Minimal, professional design with a blurred glass (glassmorphism) background —
 
 - **Hero** — what SchoolEx is, with a live-looking app preview card
 - **Features** — students & families, fees & ledger, staff & payroll, attendance, exams, offline privacy
-- **How it works** — sign in → download ZIP → install & start empty
+- **Screenshots** — a professional gallery (`screenshots/*.svg`: Overview, Students, Fees & Ledger, Payroll) with click-to-enlarge lightbox. These are faithful preview recreations with sample data, drawn from the real app's screens — replace them with real captures any time by swapping the files (keep the same names/format, or update the `<img>` paths in `index.html`).
+- **How it works** — sign in → send Rs 1,500 voucher → receive the app by email within 24 hours
 - **Reviews box** — abstract blurred design with a 5.0 summary and 5-star reviews from local people (Peshawar / KPK roles). ⚠️ These are **sample placeholder reviews** — replace them with real reviews from your schools before promoting the page publicly.
-- **Download** — gated ZIP download (see below)
+- **Get SchoolEx** — price, sign-in gate and the voucher payment step (below)
 
 ## Sign-in gate
 
-Visitors must create an account / sign in before the **Download SchoolEx (.zip)** button unlocks.
+Visitors must create an account / sign in before the payment step unlocks.
 
-> This is a **front-end demo sign-in**: accounts are stored only in the visitor's own browser (`localStorage`, passwords SHA-256 hashed with a per-user salt). It is fine for gating a download on a static page, but it is **not** a real registration system. Connect a backend (e.g. Firebase Auth, Supabase, or your own API) before collecting real user accounts.
+> This is a **front-end demo sign-in**: accounts are stored only in the visitor's own browser (`localStorage`, passwords SHA-256 hashed with a per-user salt). It is fine for gating a static page, but it is **not** a real registration system. Connect a backend (e.g. Firebase Auth, Supabase, or your own API) before collecting real user accounts.
 
-## Setting the download file
+## Payment step (Rs 1,500 voucher)
 
-Edit the top of `app.js`:
+After sign-in, the **Get SchoolEx** section shows the payment step:
 
-```js
-const SCHOOLEX_DOWNLOAD_URL = "downloads/SchoolEx.zip";
-```
+1. The visitor picks **JazzCash** or **Easypaisa** and enters their voucher code / transaction ID.
+2. **Send voucher** button — the owner's email is shown **masked** (`mas•••06@gmail.com`); the button itself is a `mailto:` to the real address (set by `PAYMENT_EMAIL` at the top of `app.js`) with subject and body pre-filled (name, school, email, method, voucher code).
+3. **I've sent my voucher** — the visitor's order is saved in their browser (`localStorage`), and a congratulations / thank-you panel appears: the app will be verified and **emailed to them within 24 hours**, with the exact deadline date/time shown.
 
-- **Option A:** place the real file at `downloads/SchoolEx.zip` in this repo/site.
-- **Option B:** paste a direct link instead, e.g. a GitHub Release asset URL.
-
-If the file is missing, signed-in users see a clear "not published yet" message instead of a broken 404 download.
+Delivery is manual by design: the owner receives the voucher email, verifies it, and replies with the SchoolEx ZIP. To change the price or email, edit `PRICE_PKR` / `PAYMENT_EMAIL` at the top of `app.js` (and the visible price in `index.html`).
 
 ## Run locally
 
@@ -45,5 +43,6 @@ python3 -m http.server 8000
 |---|---|
 | `index.html` | Page structure & content |
 | `styles.css` | All styling (blur background, glass cards, responsive breakpoints) |
-| `app.js` | Sign-in / sign-up, session, gated download |
-| `downloads/` | Put `SchoolEx.zip` here (see `downloads/README.txt`) |
+| `app.js` | Sign-in / sign-up, session, voucher payment step, thank-you state, lightbox |
+| `screenshots/` | App preview screens used by the gallery (SVG) |
+| `downloads/` | Placeholder — delivery is by email (see `downloads/README.txt`) |

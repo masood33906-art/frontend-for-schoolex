@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 780" font-family="Inter, Arial, sans-serif">
+  <rect width="1200" height="780" rx="18" fill="#f4f8f5"/>
+  <rect width="1200" height="46" rx="18" fill="#ffffff"/><rect y="23" width="1200" height="23" fill="#ffffff"/>
+  <line x1="0" y1="46" x2="1200" y2="46" stroke="#e2eae5"/>
+  <circle cx="28" cy="23" r="6" fill="#f87171"/><circle cx="50" cy="23" r="6" fill="#fbbf24"/><circle cx="72" cy="23" r="6" fill="#34d399"/>
+  <text x="600" y="29" text-anchor="middle" font-size="14" fill="#5b6b76">SchoolEx — Staff &amp; Payroll</text>
+  <rect x="0" y="46" width="216" height="734" fill="#0e2a20"/>
+  <rect x="20" y="70" width="34" height="34" rx="9" fill="#0e9f6e"/>
+  <text x="64" y="93" font-size="18" font-weight="700" fill="#ffffff">SchoolEx</text>
+  <g font-size="14.5" fill="#b9cdc4">
+    <text x="30" y="151">▦&#160;&#160;Overview</text>
+    <text x="30" y="197">🎓&#160;&#160;Students</text>
+    <rect x="14" y="218" width="188" height="40" rx="10" fill="#14532d"/>
+    <text x="30" y="243" fill="#ffffff" font-weight="600">👨‍🏫&#160;&#160;Staff &amp; Payroll</text>
+    <text x="30" y="289">🧾&#160;&#160;Fees &amp; Ledger</text>
+    <text x="30" y="335">✅&#160;&#160;Attendance</text>
+    <text x="30" y="381">📝&#160;&#160;Exams</text>
+    <text x="30" y="427">⚙️&#160;&#160;Settings</text>
+  </g>
+  <text x="248" y="98" font-size="24" font-weight="800" fill="#122b21">Pay Staff — November 2026</text>
+  <rect x="952" y="66" width="216" height="44" rx="11" fill="#0e9f6e"/>
+  <text x="1060" y="94" text-anchor="middle" font-size="14.5" font-weight="700" fill="#ffffff">Pay All (Bulk)</text>
+  <rect x="248" y="128" width="920" height="430" rx="14" fill="#ffffff" stroke="#e2eae5"/>
+  <rect x="248" y="128" width="920" height="46" rx="14" fill="#eef4f0"/>
+  <g font-size="12.5" font-weight="700" fill="#71827c">
+    <text x="272" y="156">STAFF MEMBER</text><text x="560" y="156">NET PAYABLE</text><text x="740" y="156">AMOUNT PAID</text><text x="930" y="156">STATUS</text>
+  </g>
+  <g font-size="14.5" fill="#24404f">
+    <circle cx="292" cy="216" r="17" fill="#dbeafe"/><text x="292" y="221" text-anchor="middle" font-size="12" font-weight="700" fill="#2563eb">SK</text>
+    <text x="322" y="221" font-weight="600">Sana Khan — Teacher</text><text x="560" y="221">Rs 85,000</text><text x="740" y="221" font-weight="700" fill="#0b7a55">Rs 85,000</text>
+    <rect x="922" y="198" width="86" height="28" rx="14" fill="#dcf5e8"/><text x="965" y="217" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7a55">Paid</text>
+    <line x1="248" y1="248" x2="1168" y2="248" stroke="#eef2ef"/>
+    <circle cx="292" cy="282" r="17" fill="#fef3c7"/><text x="292" y="287" text-anchor="middle" font-size="12" font-weight="700" fill="#d97706">AM</text>
+    <text x="322" y="287" font-weight="600">Ali Muhammad — Teacher</text><text x="560" y="287">Rs 85,000</text><text x="740" y="287" font-weight="700" fill="#b45309">Rs 40,000</text>
+    <rect x="922" y="264" width="110" height="28" rx="14" fill="#fef3c7"/><text x="977" y="283" text-anchor="middle" font-size="12.5" font-weight="700" fill="#b45309">Partial · 45k due</text>
+    <line x1="248" y1="314" x2="1168" y2="314" stroke="#eef2ef"/>
+    <circle cx="292" cy="348" r="17" fill="#d1fae5"/><text x="292" y="353" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7a55">NR</text>
+    <text x="322" y="353" font-weight="600">Nadia Rahman — Vice Principal</text><text x="560" y="353">Rs 120,000</text><text x="740" y="353" font-weight="700" fill="#0b7a55">Rs 120,000</text>
+    <rect x="922" y="330" width="86" height="28" rx="14" fill="#dcf5e8"/><text x="965" y="349" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7a55">Paid</text>
+    <line x1="248" y1="380" x2="1168" y2="380" stroke="#eef2ef"/>
+    <circle cx="292" cy="414" r="17" fill="#fee2e2"/><text x="292" y="419" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">FJ</text>
+    <text x="322" y="419" font-weight="600">Farhan Javed — Accountant</text><text x="560" y="419">Rs 60,000</text><text x="740" y="419" font-weight="700" fill="#71827c">Rs 0</text>
+    <rect x="922" y="396" width="86" height="28" rx="14" fill="#fee2e2"/><text x="965" y="415" text-anchor="middle" font-size="12.5" font-weight="700" fill="#b91c1c">Unpaid</text>
+    <line x1="248" y1="446" x2="1168" y2="446" stroke="#eef2ef"/>
+    <text x="272" y="486" font-size="13.5" fill="#41565f">Partial payments carry the balance forward as arrears — automatically, in one transaction.</text>
+    <text x="272" y="514" font-size="13.5" fill="#41565f">Salary slips always show the <tspan font-weight="700" fill="#0b7a55">amount actually paid</tspan>, never just the payable figure.</text>
+  </g>
+  <rect x="248" y="582" width="290" height="110" rx="14" fill="#ffffff" stroke="#e2eae5"/>
+  <text x="268" y="612" font-size="12.5" fill="#71827c" font-weight="600">TOTAL PAYABLE</text>
+  <text x="268" y="648" font-size="27" font-weight="800" fill="#122b21">Rs 3,50,000</text>
+  <rect x="554" y="582" width="290" height="110" rx="14" fill="#ffffff" stroke="#e2eae5"/>
+  <text x="574" y="612" font-size="12.5" fill="#71827c" font-weight="600">PAID SO FAR</text>
+  <text x="574" y="648" font-size="27" font-weight="800" fill="#0b7a55">Rs 2,45,000</text>
+  <rect x="860" y="582" width="308" height="110" rx="14" fill="#ffffff" stroke="#e2eae5"/>
+  <text x="880" y="612" font-size="12.5" fill="#71827c" font-weight="600">ARREARS</text>
+  <text x="880" y="648" font-size="27" font-weight="800" fill="#b45309">Rs 1,05,000</text>
+  <text x="1168" y="765" text-anchor="end" font-size="11" fill="#a7b8b1">Demo preview — sample figures</text>
+</svg>

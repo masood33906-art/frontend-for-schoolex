@@ -1,11 +1,14 @@
-/* SchoolEx landing page — sign-in gate + ZIP download
+/* SchoolEx landing page — sign-in gate + voucher payment + email delivery
    ---------------------------------------------------------------
-   CONFIG: where the SchoolEx ZIP lives.
-   Option A: put the file at  downloads/SchoolEx.zip  in this repo/site.
-   Option B: paste a direct link (e.g. a GitHub Release asset URL).
+   CONFIG: SchoolEx is sold for a one-time Rs 1,500, paid by a
+   JazzCash / Easypaisa voucher emailed to the owner. The owner
+   verifies the voucher and emails the app ZIP within 24 hours.
+   The email is shown MASKED on the page; the real address lives
+   only here and in the mailto link it builds.
 ---------------------------------------------------------------- */
-const SCHOOLEX_DOWNLOAD_URL = "downloads/SchoolEx.zip";
-const SCHOOLEX_FILE_NAME = "SchoolEx.zip";
+const PAYMENT_EMAIL = "masood33906@gmail.com";
+const PRICE_PKR = 1500;
+const ORDERS_KEY = "schoolex_site_orders_v1";
 
 /* NOTE: This is a front-end demo sign-in for the landing page.
    Accounts are kept only in this browser's localStorage, with
@@ -52,11 +55,12 @@ function renderAuthState() {
     $("#userName").textContent = user.name;
     $("#userAvatar").textContent = user.name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
   }
-  $$("[data-download-label]").forEach(el => el.textContent = user ? "Download SchoolEx (.zip)" : "Sign in to download");
+  $$("[data-download-label]").forEach(el => el.textContent = user ? "Continue to payment — Rs 1,500" : "Sign in to get SchoolEx");
   $$("[data-download]").forEach(b => b.classList.toggle("unlocked", !!user));
   $$("[data-download-hint]").forEach(el => el.textContent = user
-    ? `Signed in as ${user.email} — your download is unlocked.`
+    ? `Signed in as ${user.email} — one step left: send the Rs 1,500 voucher below.`
     : el.dataset.defaultHint || el.textContent);
+  renderOrderState();
 }
 $$("[data-download-hint]").forEach(el => el.dataset.defaultHint = el.textContent);
 
@@ -121,7 +125,7 @@ $("#signUpForm").addEventListener("submit", async (e) => {
   saveUsers(users);
   setSession({ email, at: Date.now() });
   closeAuth(); renderAuthState();
-  toast(`Welcome, ${name.split(" ")[0]} — your download is unlocked.`, "ok");
+  toast(`Welcome, ${name.split(" ")[0]} — you're signed in. One payment step left below.`, "ok");
   document.getElementById("download")?.scrollIntoView({ behavior: "smooth" });
 });
 
@@ -140,36 +144,121 @@ $("#signInForm").addEventListener("submit", async (e) => {
   if ((await hashPassword(password, user.salt)) !== user.hash) return showError("#siError", "Incorrect password. Please try again.");
   setSession({ email, at: Date.now() });
   closeAuth(); renderAuthState();
-  toast(`Welcome back, ${user.name.split(" ")[0]} — your download is unlocked.`, "ok");
+  toast(`Welcome back, ${user.name.split(" ")[0]} — you're signed in. One payment step left below.`, "ok");
 });
 
 /* ---------- sign out ---------- */
 $("#signOutBtn").addEventListener("click", () => {
   setSession(null); renderAuthState();
-  toast("Signed out. Sign in again any time to download.");
+  toast("Signed out. Sign in again any time to continue.");
 });
 
-/* ---------- download (gated) ---------- */
-async function startDownload() {
-  if (!currentUser()) { openAuth("signin"); toast("Please sign in first — the download unlocks right after."); return; }
-  // If the ZIP is hosted on this same site, check it actually exists
-  // so the user gets a clear message instead of a 404 page.
-  if (!/^https?:\/\//i.test(SCHOOLEX_DOWNLOAD_URL)) {
-    try {
-      const res = await fetch(SCHOOLEX_DOWNLOAD_URL, { method: "HEAD" });
-      if (!res.ok) throw new Error("missing");
-    } catch {
-      toast("The download file hasn't been published yet. Please check back soon — your account is ready.", "err");
-      return;
-    }
-  }
-  const a = document.createElement("a");
-  a.href = SCHOOLEX_DOWNLOAD_URL;
-  a.download = SCHOOLEX_FILE_NAME;
-  document.body.appendChild(a); a.click(); a.remove();
-  toast("Your SchoolEx download has started.", "ok");
+/* ---------- get SchoolEx (gated) → payment step ---------- */
+function goToPayment() {
+  if (!currentUser()) { openAuth("signin"); toast("Please sign in first — the payment step unlocks right after."); return; }
+  document.getElementById("download")?.scrollIntoView({ behavior: "smooth" });
+  setTimeout(() => $("#voucherCode")?.focus({ preventScroll: true }), 500);
 }
-$$("[data-download]").forEach(b => b.addEventListener("click", startDownload));
+$$("[data-download]").forEach(b => b.addEventListener("click", goToPayment));
+
+/* ---------- orders (voucher submissions, this browser only) ---------- */
+const loadOrders = () => { try { return JSON.parse(localStorage.getItem(ORDERS_KEY)) || []; } catch { return []; } };
+const saveOrders = (o) => localStorage.setItem(ORDERS_KEY, JSON.stringify(o));
+const myOrder = () => { const u = currentUser(); return u ? loadOrders().find(o => o.email === u.email) || null : null; };
+
+const fmtWhen = (ts) => new Intl.DateTimeFormat("en-GB", {
+  weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit", hour12: true, timeZone: "Asia/Karachi"
+}).format(new Date(ts));
+
+let selectedMethod = "JazzCash";
+$$(".method-pill").forEach(pill => pill.addEventListener("click", () => {
+  selectedMethod = pill.dataset.method;
+  $$(".method-pill").forEach(p => {
+    const on = p === pill;
+    p.classList.toggle("active", on);
+    p.setAttribute("aria-checked", on);
+  });
+  updateMailto();
+}));
+
+function updateMailto() {
+  const user = currentUser();
+  const code = $("#voucherCode").value.trim();
+  const subject = encodeURIComponent(`SchoolEx Payment — Rs ${PRICE_PKR} ${selectedMethod} Voucher`);
+  const body = encodeURIComponent(
+`Assalam-o-Alaikum,
+
+I have sent a ${selectedMethod} voucher of Rs ${PRICE_PKR} for SchoolEx.
+
+Name: ${user ? user.name : ""}
+School: ${user && user.school ? user.school : ""}
+My email (send the app here): ${user ? user.email : ""}
+Voucher code / transaction ID: ${code || "(paste your voucher code here)"}
+
+Please verify and email me the SchoolEx app within 24 hours. Thank you!`
+  );
+  $("#sendVoucherBtn").href = `mailto:${PAYMENT_EMAIL}?subject=${subject}&body=${body}`;
+}
+$("#voucherCode").addEventListener("input", updateMailto);
+$("#sendVoucherBtn").addEventListener("click", (e) => {
+  if (!currentUser()) { e.preventDefault(); openAuth("signin"); toast("Please sign in first, then send your voucher."); }
+});
+
+function renderOrderState() {
+  const panel = $("#paymentPanel"), thanks = $("#thanksPanel");
+  if (!panel || !thanks) return;
+  const user = currentUser();
+  const order = myOrder();
+  panel.hidden = !user || !!order;
+  thanks.hidden = !order;
+  if (order) {
+    $("#thanksEmail").textContent = order.email;
+    $("#deliveryBy").textContent = fmtWhen(order.deliverBy);
+    $("#orderSummary").textContent =
+      `Order reference: ${order.ref} · ${order.method} voucher ${order.voucher} · Submitted ${fmtWhen(order.at)} · Status: awaiting verification`;
+  }
+  updateMailto();
+}
+
+$("#confirmSentBtn").addEventListener("click", () => {
+  const user = currentUser();
+  if (!user) { openAuth("signin"); return; }
+  const code = $("#voucherCode").value.trim();
+  if (code.length < 4) {
+    const err = $("#payError");
+    err.textContent = "Please enter your voucher code / transaction ID first — we need it to verify your payment.";
+    err.hidden = false;
+    $("#voucherCode").focus();
+    return;
+  }
+  $("#payError").hidden = true;
+  const at = Date.now();
+  const order = {
+    ref: "SX-" + at.toString(36).toUpperCase(),
+    email: user.email, name: user.name, school: user.school || "",
+    method: selectedMethod, voucher: code, amount: PRICE_PKR,
+    at, deliverBy: at + 24 * 60 * 60 * 1000, status: "awaiting verification"
+  };
+  const orders = loadOrders().filter(o => o.email !== user.email);
+  orders.push(order);
+  saveOrders(orders);
+  renderOrderState();
+  $("#thanksPanel").scrollIntoView({ behavior: "smooth", block: "center" });
+  toast("Congratulations! Your voucher details are submitted — the app will be emailed within 24 hours.", "ok");
+});
+
+/* ---------- screenshots lightbox ---------- */
+const lightbox = $("#lightbox");
+$$("[data-lightbox]").forEach(btn => btn.addEventListener("click", () => {
+  $("#lightboxImg").src = btn.dataset.lightbox;
+  $("#lightboxCaption").innerHTML = btn.dataset.caption || "";
+  lightbox.hidden = false;
+  document.body.style.overflow = "hidden";
+}));
+function closeLightbox() { lightbox.hidden = true; document.body.style.overflow = ""; $("#lightboxImg").src = ""; }
+$("#lightboxClose").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !lightbox.hidden) closeLightbox(); });
 
 /* ---------- mobile nav ---------- */
 const navToggle = $("#navToggle"), navLinks = $("#navLinks");

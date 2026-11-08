@@ -1,10 +1,12 @@
-Put the SchoolEx app ZIP here and name it exactly:
+Delivery note
+-------------
 
-    SchoolEx.zip
+SchoolEx is NOT downloaded directly from this site.
 
-The landing page's download button points to downloads/SchoolEx.zip
-(see SCHOOLEX_DOWNLOAD_URL at the top of app.js).
+Visitors pay a one-time Rs 1,500 by JazzCash / Easypaisa voucher
+(see the "Get SchoolEx" section of the page). The owner verifies
+the voucher received by email and emails the SchoolEx app (ZIP)
+to the buyer within 24 hours.
 
-Alternatively, edit app.js and paste a direct download link
-(for example a GitHub Release asset URL) — then this folder
-is not needed.
+This folder is kept only as a placeholder in case the owner later
+switches back to direct downloads.
