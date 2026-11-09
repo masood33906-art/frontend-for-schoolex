@@ -12,7 +12,7 @@ Minimal, professional design with a blurred glass (glassmorphism) background —
 - **How it works** — sign in → send Rs 1,500 voucher → receive the app by email within 24 hours
 - **Reviews box** — abstract blurred design with a 5.0 summary and 5-star reviews from local people (Peshawar / KPK roles). ⚠️ These are **sample placeholder reviews** — replace them with real reviews from your schools before promoting the page publicly.
 - **Get SchoolEx** — price, sign-in gate and the voucher payment step (below)
-- **Scroll companion** — a small 3D student mascot (inline SVG, no assets) rides a slim progress track on the right edge and travels down the page as the visitor scrolls, with a gentle bob, a livelier "walking" wiggle while scrolling, a swaying cap tassel, and short speech bubbles that change per section. It respects `prefers-reduced-motion`, shrinks on mobile, and never intercepts clicks (`pointer-events: none`).
+- **Quiet motion** — deliberately subtle: a 3px reading-progress hairline at the very top fills as the visitor scrolls; cards and panels fade-rise gently as they enter the viewport (staggered, `IntersectionObserver`); the background glow blobs drift very slowly. Everything switches off under `prefers-reduced-motion`. (A 3D student scroll mascot was tried on 2026-11-09 and removed the same day at the owner's request — he preferred the page calm and barely-noticeable motion only.)
 
 ## Sign-in gate
 

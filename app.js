@@ -310,71 +310,31 @@ navToggle.addEventListener("click", () => {
 });
 navLinks.addEventListener("click", (e) => { if (e.target.tagName === "A") navLinks.classList.remove("open"); });
 
-/* ---------- scroll companion (3D student travels with the scroll) ---------- */
+
+
+/* ---------- quiet motion: progress hairline + section reveal ---------- */
 (() => {
-  const buddy = $("#scrollBuddy"), figure = $("#buddyFigure"), bubble = $("#buddyBubble"), fill = $("#buddyProgress");
-  if (!buddy || !figure) return;
+  const bar = $("#scrollProgress");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let targetY = 0, currentY = -1, rafOn = false, idleTimer = null, bubbleTimer = null, lastSection = "";
-
-  const sectionNotes = [
-    ["features", "Everything your school office needs ✨"],
-    ["screenshots", "Take a look inside 👀"],
-    ["how", "Start in minutes ⏱️"],
-    ["reviews", "Schools nearby love it ⭐"],
-    ["download", "Get SchoolEx for your school 🎓"]
-  ];
-
-  function say(text, holdMs = 3400) {
-    if (!bubble || bubble.textContent === text && bubble.classList.contains("show")) return;
-    bubble.textContent = text;
-    bubble.classList.add("show");
-    clearTimeout(bubbleTimer);
-    bubbleTimer = setTimeout(() => bubble.classList.remove("show"), holdMs);
+  if (bar && !reduceMotion) {
+    let ticking = false;
+    const paint = () => {
+      ticking = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      bar.style.transform = `scaleX(${p.toFixed(4)})`;
+    };
+    window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
+    window.addEventListener("resize", paint);
+    paint();
   }
-
-  function frame() {
-    const travel = Math.max(0, buddy.clientHeight - figure.offsetHeight);
-    if (currentY < 0) currentY = targetY;
-    currentY += (targetY - currentY) * (reduceMotion ? 1 : 0.14);
-    if (Math.abs(targetY - currentY) < 0.4) currentY = targetY;
-    figure.style.transform = `translate(-50%, ${currentY.toFixed(1)}px)`;
-    rafOn = currentY !== targetY;
-    if (rafOn) requestAnimationFrame(frame);
-  }
-  function kick() { if (!rafOn) { rafOn = true; requestAnimationFrame(frame); } }
-
-  function onScroll() {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    const travel = Math.max(0, buddy.clientHeight - figure.offsetHeight);
-    targetY = p * travel;
-    if (fill) fill.style.height = (p * 100).toFixed(1) + "%";
-    kick();
-    if (!reduceMotion) {
-      buddy.classList.add("walking");
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => buddy.classList.remove("walking"), 170);
-    }
-    // Section-aware bubble: greet the visitor as new sections arrive.
-    const probe = window.scrollY + window.innerHeight * 0.45;
-    let current = "top";
-    for (const [id] of sectionNotes) {
-      const el = document.getElementById(id);
-      if (el && el.offsetTop <= probe) current = id;
-    }
-    if (current !== lastSection) {
-      lastSection = current;
-      const note = sectionNotes.find(([id]) => id === current);
-      if (note) say(note[1]);
-      else if (bubble) bubble.classList.remove("show");
-    }
-  }
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-  onScroll();
-  setTimeout(() => say("Welcome to SchoolEx 👋", 7000), 900);
+  const targets = $$(".features-grid .card, .steps-grid .card, .shot-featured, .shots-grid .shot, .review-card, .reviews-summary, .download-card, .hero-preview");
+  if (reduceMotion || !("IntersectionObserver" in window)) return;
+  targets.forEach((el, i) => { el.classList.add("reveal"); el.style.transitionDelay = (i % 3) * 70 + "ms"; });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: "0px 0px -6% 0px" });
+  targets.forEach((el) => io.observe(el));
 })();
 
 renderAuthState();
