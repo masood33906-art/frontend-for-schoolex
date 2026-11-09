@@ -259,3 +259,28 @@ main{max-width:1180px;margin:0 auto;padding:0 16px}
   html{scroll-behavior:auto}
   *{transition:none!important}
 }
+
+/* ---- Scroll companion: 3D student who travels with the scroll ---- */
+.scroll-buddy{position:fixed;right:14px;top:92px;bottom:92px;width:88px;z-index:40;pointer-events:none}
+.buddy-track{position:absolute;left:50%;top:6px;bottom:6px;width:4px;transform:translateX(-50%);border-radius:99px;background:rgba(14,84,60,.14);overflow:hidden}
+.buddy-progress{display:block;width:100%;height:0%;border-radius:99px;background:linear-gradient(180deg,#19c37d,#2563eb)}
+.buddy-figure{position:absolute;left:50%;top:0;width:84px;transform:translate(-50%,0);will-change:transform}
+.buddy-bob{animation:buddyBob 2.8s ease-in-out infinite;filter:drop-shadow(0 14px 14px rgba(13,38,28,.28))}
+.scroll-buddy.walking .buddy-bob{animation:buddyWalk .62s ease-in-out infinite}
+.buddy-svg{display:block;width:100%;height:auto}
+.buddy-tassel{transform-origin:88px 13px;animation:buddyTassel 2.8s ease-in-out infinite}
+.scroll-buddy.walking .buddy-tassel{animation-duration:.62s}
+.buddy-bubble{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translate(-50%,6px) scale(.92);background:rgba(255,255,255,.94);color:#12332a;font-size:.72rem;font-weight:600;line-height:1.3;padding:7px 11px;border-radius:13px;border-bottom-right-radius:4px;box-shadow:0 10px 24px rgba(13,38,28,.20);white-space:nowrap;opacity:0;transition:opacity .35s ease,transform .35s ease}
+.buddy-bubble.show{opacity:1;transform:translate(-50%,0) scale(1)}
+@keyframes buddyBob{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-4px) rotate(.6deg)}}
+@keyframes buddyWalk{0%,100%{transform:translateY(0) rotate(-2.4deg)}50%{transform:translateY(-5px) rotate(2.4deg)}}
+@keyframes buddyTassel{0%,100%{transform:rotate(0deg)}50%{transform:rotate(9deg)}}
+@media (max-width:680px){
+  .scroll-buddy{right:2px;top:110px;bottom:110px;width:60px}
+  .buddy-figure{width:56px}
+  .buddy-bubble{font-size:.64rem;padding:6px 9px}
+}
+@media (prefers-reduced-motion:reduce){
+  .buddy-bob,.buddy-tassel{animation:none!important}
+  .buddy-bubble{transition:none}
+}
