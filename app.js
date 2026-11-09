@@ -325,7 +325,7 @@ navLinks.addEventListener("click", (e) => { if (e.target.tagName === "A") navLin
     ["download", "Get SchoolEx for your school 🎓"]
   ];
 
-  function say(text, holdMs = 2600) {
+  function say(text, holdMs = 3400) {
     if (!bubble || bubble.textContent === text && bubble.classList.contains("show")) return;
     bubble.textContent = text;
     bubble.classList.add("show");
@@ -374,7 +374,7 @@ navLinks.addEventListener("click", (e) => { if (e.target.tagName === "A") navLin
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onScroll);
   onScroll();
-  setTimeout(() => say("Welcome to SchoolEx 👋", 3000), 700);
+  setTimeout(() => say("Welcome to SchoolEx 👋", 4800), 900);
 })();
 
 renderAuthState();
