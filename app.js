@@ -374,7 +374,7 @@ navLinks.addEventListener("click", (e) => { if (e.target.tagName === "A") navLin
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onScroll);
   onScroll();
-  setTimeout(() => say("Welcome to SchoolEx 👋", 4800), 900);
+  setTimeout(() => say("Welcome to SchoolEx 👋", 7000), 900);
 })();
 
 renderAuthState();
